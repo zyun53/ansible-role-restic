@@ -1,2 +1,18 @@
 ---
-# defaults file for ansible-role-restic
+restic_version: "0.9.6"
+restic_sha256sum: a88ca09d1dd051d470965667a224a2b81930c6628a0566b7b17868be40207dc8
+
+restic_user_name: restic
+restic_user_id: 5001
+restic_group_name: "{{ restic_user_name }}"
+restic_group_id: 5001
+
+restic_backups:
+  - name: ex-name
+    repository: b2:hoge
+    password: ex-password
+    credentials:
+      api_key: ex-key
+      api_secret: ex-secret
+    args: backup /var/log
+    calendar: "*-*-* *:25:00"

@@ -1,2 +1,18 @@
 ---
-# tasks file for ansible-role-restic
+- include_tasks: install.yml
+
+- name: Create a directory /etc/restic
+  file:
+    path: /etc/restic
+    state: directory
+    owner: restic
+    group: restic
+
+- name: Create a directory /var/lib/restic
+  file:
+    path: /var/lib/restic
+    state: directory
+    owner: restic
+    group: restic
+
+- include_tasks: timer.yml

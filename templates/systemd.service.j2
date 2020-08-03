@@ -1,0 +1,8 @@
+[Unit]
+Description=restic backup service for {{ item.name }}
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/restic/env.{{ item.name }}
+ExecStart=/usr/local/bin/restic {{ item.args }}
+User={{ restic_user_name }}

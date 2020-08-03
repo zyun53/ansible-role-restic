@@ -1,0 +1,10 @@
+[Unit]
+Description=Timer for {{ item.name }}
+Requires=restic-{{ item.name }}.service
+
+[Timer]
+Unit=restic-{{ item.name }}.service
+OnCalendar={{ item.calendar }}
+
+[Install]
+WantedBy=timers.target

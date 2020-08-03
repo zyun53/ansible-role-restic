@@ -1,0 +1,44 @@
+---
+- name: Stat of restic source bin
+  stat:
+    path: "/usr/local/src/restic_{{ restic_version }}_linux_amd64"
+  register: restic_bin_st
+
+- name: Ensure restic group
+  group:
+    name: "{{ restic_group_name }}"
+    gid: "{{ restic_group_id }}"
+    state: present
+
+- name: Ensure restic user
+  user:
+    name: "{{ restic_user_name }}"
+    group: "{{ restic_group_name }}"
+    uid: "{{ restic_user_id }}"
+    state: present
+
+- name: Download restic reelase archive
+  get_url:
+    url: "https://github.com/restic/restic/releases/download/v{{ restic_version }}/restic_{{ restic_version }}_linux_amd64.bz2"
+    dest: "/usr/local/src/restic_{{ restic_version }}_linux_amd64.bz2"
+    checksum: "sha256:{{ restic_sha256sum }}"
+  when: not restic_bin_st.stat.exists
+
+- name: Extract archive
+  command: "bzip2 -d /usr/local/src/restic_{{ restic_version }}_linux_amd64.bz2"
+  args:
+    chdir: /usr/local/src
+  when: not restic_bin_st.stat.exists
+
+- name: Copy restic bin to path
+  copy:
+    src: "/usr/local/src/restic_{{ restic_version }}_linux_amd64"
+    dest: /usr/local/bin/restic
+    mode: "0755"
+    remote_src: true
+
+- name: Ensure proper capabilities for restic binary
+  capabilities:
+    path: /usr/local/bin/restic
+    capability: cap_dac_read_search+ep
+    state: present
