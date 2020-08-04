@@ -4,7 +4,9 @@ Requires=restic-{{ item.name }}.service
 
 [Timer]
 Unit=restic-{{ item.name }}.service
-OnCalendar={{ item.calendar }}
+{% for cl in item.calendars %}
+OnCalendar={{ cl }}
+{% endfor %}
 
 [Install]
 WantedBy=timers.target
